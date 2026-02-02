@@ -1,0 +1,24 @@
+# Entorno virtual
+venv/
+
+# Variables de entorno
+.env
+
+# Cache de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Archivos de configuración del IDE
+.vscode/
+.idea/
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Migraciones compiladas (si aplica)
+alembic/versions/*.pyc

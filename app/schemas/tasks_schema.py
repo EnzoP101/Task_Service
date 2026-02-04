@@ -15,6 +15,8 @@ class TaskCreate(TaskBase): pass
 class Task(TaskBase):
     id: int
     owner_id: int
+    is_completed: bool
+    created_at: str
 
     class Config:
         orm_mode = True

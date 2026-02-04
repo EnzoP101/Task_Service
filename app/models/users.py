@@ -1,8 +1,9 @@
 from app.database.base import Base
-from sqlalchemy import Column, Integer, String, Text, DateTime, func, relationship, Boolean
+from sqlalchemy import Column, Integer, String, Text, DateTime, func, Boolean
+from sqlalchemy.orm import relationship
 
 class User(Base):
-    __tableName__ = "users"
+    __tablename__ = "users"
 
     #Define columns for the users table
     id = Column(Integer, primary_key=True, nullable=False, index=True)

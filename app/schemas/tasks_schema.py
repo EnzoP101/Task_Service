@@ -15,7 +15,7 @@ class TaskCreate(TaskBase): pass
 # Schema for Task Read
 class Task(TaskBase):
     id: int
-    owner_id: int
+    user_id: int
     is_completed: bool
     created_at: datetime
 

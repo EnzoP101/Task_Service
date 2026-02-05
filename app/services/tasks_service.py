@@ -13,8 +13,8 @@ def get_tasks(db: Session, skip: int = 0, limit: int = 25):
 
 #Create Operation
 
-def create_task(db: Session, task: tasks_schema.TaskCreate, owner_id: int):
-    db_task = tasks_model.Task(**task.dict(), owner_id=owner_id)
+def create_task(db: Session, task: tasks_schema.TaskCreate, user_id: int):
+    db_task = tasks_model.Task(**task.dict(), user_id=user_id)
     db.add(db_task)
     db.commit()
     db.refresh(db_task)

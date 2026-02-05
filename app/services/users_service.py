@@ -28,3 +28,27 @@ def create_user(db: Session, user: users_schema.UserCreate):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+#Ban User
+def ban_user(db: Session, user_id: int):
+    db_user = db.query(user_models.User).filter(user_models.User.id == user_id).first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    elif not db_user.is_active:
+        raise HTTPException(status_code=400, detail="User is already banned")
+    db_user.is_active = False
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+#Reactivate User
+def reactivate_user(db: Session, user_id: int):
+    db_user = db.query(user_models.User).filter(user_models.User.id == user_id).first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    elif db_user.is_active:
+        raise HTTPException(status_code=400, detail="User is already active")
+    db_user.is_active = True
+    db.commit()
+    db.refresh(db_user)
+    return db_user

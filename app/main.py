@@ -45,6 +45,20 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
 
+#Ban User
+@app.put("/users/{user_id}/ban", response_model=users_schema.User)
+def ban_user(user_id: int, db: Session = Depends(get_db)):
+    db_user = users_service.ban_user(db, user_id=user_id)
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    raise HTTPException(status_code=200, detail="User banned successfully")
+
+#Reactivate User
+@app.put("/users/{user_id}/reactivate", response_model=users_schema.User)
+def reactivate_user(user_id: int, db: Session = Depends(get_db)):
+    db_user = users_service.reactivate_user(db, user_id=user_id)
+    raise HTTPException(status_code=200, detail="User reactivated successfully")
+
 
 #CRUD for Tasks
 
@@ -54,7 +68,7 @@ def create_task_for_user(user_id: int, task: tasks_schema.TaskCreate, db: Sessio
     db_user = users_service.get_user(db, user_id=user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    return tasks_service.create_task(db=db, task=task, owner_id=user_id)
+    return tasks_service.create_task(db=db, task=task, user_id=user_id)
 
 #Read all Tasks with pagination
 @app.get("/tasks", response_model=list[tasks_schema.Task])
@@ -63,17 +77,17 @@ def read_tasks(skip: int = 0, limit: int = 25, db: Session = Depends(get_db)):
     return tasks
 
 #Upgrade Task
-@app.put("/tasks/{task_id}", response_model=tasks_schema.Task)
-def update_task(task_id: int, task: tasks_schema.TaskCreate, is_completed: bool, db: Session = Depends(get_db)):
-    db_task = tasks_service.update_task(db, task_id=task_id, is_completed=is_completed)
+@app.put("/users/{user_id}/tasks/{task_id}", response_model=tasks_schema.Task)
+def update_task(user_id: int, task_id: int, task: tasks_schema.TaskUpdate, db: Session = Depends(get_db)):
+    db_task = tasks_service.update_task(db, task_id=task_id, task_update=task)
     if db_task is None:
         raise HTTPException(status_code=404, detail="Task not found")
     return db_task
 
 #Delete Task
-@app.delete("/tasks/{task_id}")
-def delete_task(task_id: int, db: Session = Depends(get_db)):
+@app.delete("/users/{user_id}/tasks/{task_id}")
+def delete_task(user_id: int, task_id: int, db: Session = Depends(get_db)):
     db_task = tasks_service.delete_task(db, task_id=task_id)
     if db_task is None:
         raise HTTPException(status_code=404, detail="Task not found")
-    return {"detail": "Task deleted successfully"}
+    raise HTTPException(status_code=200, detail="Task deleted successfully")

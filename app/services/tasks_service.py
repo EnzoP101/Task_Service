@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from app.schemas import tasks_schema
-from app.models import tasks as tasks_model
+from schemas import tasks_schema
+from models import tasks as tasks_model
 from fastapi import HTTPException
 
 # Service functions for Tasks
@@ -22,13 +22,12 @@ def create_task(db: Session, task: tasks_schema.TaskCreate, owner_id: int):
 
 #Update Operation
 
-def update_task(db: Session, task_id: int, is_completed: bool):
+def update_task(db: Session, task_id: int, task_update: tasks_schema.TaskUpdate):
     task = db.query(tasks_model.Task).filter(tasks_model.Task.id == task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
-    for key, value in task.dict().items():
+    for key, value in task_update.dict(exclude_unset=True).items():
         setattr(task, key, value)
-    task.is_completed = is_completed
     db.commit()
     db.refresh(task)
     return task

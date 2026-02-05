@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from app.schemas import users_schema
-from app.models import users as user_models
+from schemas import users_schema
+from models import users as user_models
 from fastapi import HTTPException
 
 # Service functions for Users
@@ -21,9 +21,9 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 def create_user(db: Session, user: users_schema.UserCreate):
     
-    fake_hashed_password = user.password + "notreallyhashed"
+    hashed_password = user.password + "notreallyhashed"
     
-    db_user = user_models.User(email=user.email, username=user.username, hashed_password=fake_hashed_password, role=user.role)
+    db_user = user_models.User(email=user.email, username=user.username, password_hash=hashed_password)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)

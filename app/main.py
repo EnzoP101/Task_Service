@@ -45,6 +45,8 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
 
+#Update Operations for Users
+
 #Ban User
 @app.put("/users/{user_id}/ban", response_model=users_schema.User)
 def ban_user(user_id: int, db: Session = Depends(get_db)):
@@ -58,6 +60,7 @@ def ban_user(user_id: int, db: Session = Depends(get_db)):
 def reactivate_user(user_id: int, db: Session = Depends(get_db)):
     db_user = users_service.reactivate_user(db, user_id=user_id)
     raise HTTPException(status_code=200, detail="User reactivated successfully")
+
 
 
 #CRUD for Tasks

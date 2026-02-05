@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from schemas import users_schema
 from models import users as user_models
 from fastapi import HTTPException
+from passlib.hash import sha256_crypt
 
 # Service functions for Users
 
@@ -17,17 +18,20 @@ def get_user_by_email(db: Session, email: str):
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(user_models.User).offset(skip).limit(limit).all()
+
 #Create Operation
 
 def create_user(db: Session, user: users_schema.UserCreate):
     
-    hashed_password = user.password + "notreallyhashed"
+    hashed_password = sha256_crypt.hash(user.password)
     
     db_user = user_models.User(email=user.email, username=user.username, password_hash=hashed_password)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
     return db_user
+
+#Update Operations
 
 #Ban User
 def ban_user(db: Session, user_id: int):
